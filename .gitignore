@@ -2,12 +2,15 @@
 __pycache__/
 *.pyc
 *.pyo
-*.pyd
 
-# Virtual Environment
+# Virtual environment
 Lib/
 Include/
 Scripts/
 pyvenv.cfg
 
-venv/
+# VS Code
+.vscode/
+
+# Logs
+*.log
