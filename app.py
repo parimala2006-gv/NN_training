@@ -17,31 +17,32 @@ def get_model():
 @app.route("/")
 def home():
     return render_template("index.html")
-
-
-@app.route("/predict", methods=["POST"])
+@app.route("/predict", methods=["GET","POST"])
 def predict():
 
-    sepal_length = float(request.form["sepal_length"])
-    sepal_width = float(request.form["sepal_width"])
-    petal_length = float(request.form["petal_length"])
-    petal_width = float(request.form["petal_width"])
+    if request.method == "POST":
 
-    features = np.array([[sepal_length, sepal_width, petal_length, petal_width]])
+        sepal_length = float(request.form["sepal_length"])
+        sepal_width = float(request.form["sepal_width"])
+        petal_length = float(request.form["petal_length"])
+        petal_width = float(request.form["petal_width"])
 
-    model = get_model()
+        features = np.array([[sepal_length, sepal_width, petal_length, petal_width]])
 
-    prediction = model.predict(features)
+        model = get_model()
 
-    result = np.argmax(prediction)
+        prediction = model.predict(features)
 
-    classes = ["Setosa", "Versicolor", "Virginica"]
+        result = np.argmax(prediction)
 
-    return render_template(
-        "index.html",
-        prediction_text="Predicted Flower: " + classes[result]
-    )
+        classes = ["Setosa", "Versicolor", "Virginica"]
 
+        return render_template(
+            "index.html",
+            prediction_text="Predicted Flower: " + classes[result]
+        )
+
+    return render_template("index.html")
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
