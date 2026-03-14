@@ -1,11 +1,18 @@
+import os
 import numpy as np
 from flask import Flask, render_template, request
-from tensorflow.keras.models import load_model
 
 app = Flask(__name__)
 
-# Load trained model
-model = load_model("model/iris_model.h5")
+model = None
+
+def get_model():
+    global model
+    if model is None:
+        from tensorflow.keras.models import load_model
+        model = load_model("model/iris_model.h5")
+    return model
+
 
 @app.route("/")
 def home():
@@ -22,6 +29,8 @@ def predict():
 
     features = np.array([[sepal_length, sepal_width, petal_length, petal_width]])
 
+    model = get_model()
+
     prediction = model.predict(features)
 
     result = np.argmax(prediction)
@@ -35,4 +44,5 @@ def predict():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
